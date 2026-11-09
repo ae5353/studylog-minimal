@@ -404,8 +404,6 @@ var Logic = (function () {
   };
 
   // PWA
-  var manifest = { name: 'StudyLog', short_name: 'StudyLog', start_url: '.', display: 'standalone', background_color: '#0f1115', theme_color: '#6c8cff',
-    icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }] };
   var ml = document.createElement('link'); ml.rel = 'manifest'; ml.href = 'manifest.webmanifest'; document.head.appendChild(ml);
   if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) navigator.serviceWorker.register('sw.js').catch(function () {});
   document.addEventListener('visibilitychange', function () { if (!document.hidden) renderAll(); });

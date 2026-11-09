@@ -26,6 +26,6 @@ Session-first study tracker. One giant START/STOP button, a big timer, free-text
 
 ## Tests
 ```
-node --test tests/
+node --test tests/logic.test.js
 ```
 Logic lives between `LOGIC:START` / `LOGIC:END` markers in `index.html`; tests extract and evaluate that block.
