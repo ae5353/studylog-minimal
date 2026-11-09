@@ -123,7 +123,11 @@ input[type=range]{width:100%;accent-color:var(--acc);height:36px}
   <label>What I learned</label><input type="text" id="learned" maxlength="200" placeholder="One line">
   <label>Notes</label><textarea id="notes" rows="3"></textarea>
   <label>Progress: <b id="rv">50</b>%</label><input type="range" id="rating" min="0" max="100" step="5" value="50">
-  <div class="row"><button type="button" id="discard">Discard</button><button class="pri" id="save" value="save">Save</button></div>
+  <div class="row">
+    <button type="button" id="cancelStop">Cancel (Keep Running)</button>
+    <button type="button" id="discard">Discard</button>
+    <button class="pri" id="save" value="save">Save Session</button>
+  </div>
 </form></dialog>
 
 <dialog id="repDlg"><form method="dialog">
@@ -250,8 +254,14 @@ var Logic = (function () {
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var KEY = 'studylog.v1', SET = 'studylog.settings';
-  var data = Logic.normalize(JSON.parse(localStorage.getItem(KEY) || '{}'));
-  var settings = JSON.parse(localStorage.getItem(SET) || '{}');
+  var data = (function () {
+    try { return Logic.normalize(JSON.parse(localStorage.getItem(KEY) || '{}')); }
+    catch (_) { return Logic.normalize({}); }
+  })();
+  var settings = (function () {
+    try { return JSON.parse(localStorage.getItem(SET) || '{}'); }
+    catch (_) { return {}; }
+  })();
   var calMonth = new Date(); calMonth.setDate(1);
   var uid = function () { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); };
   function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
@@ -302,6 +312,9 @@ var Logic = (function () {
     }
   };
   $('rating').oninput = function () { $('rv').textContent = this.value; };
+  $('cancelStop').onclick = function () { $('stopDlg').close(); };
+  $('stopDlg').onclick = function (e) { if (e.target === this) this.close(); };
+  $('learned').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); $('notes').focus(); } };
   $('discard').onclick = function () { if (confirm('Discard this session?')) { data.timer = null; save(); $('stopDlg').close(); renderAll(); } };
   $('stopForm').onsubmit = function () {
     if (!data.timer) return;
